@@ -25,31 +25,7 @@ scroll_detected = False
 # Функция обработки прокрутки колесика
 def on_scroll(x, y, dx, dy):
     global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
-    global scroll_detected
+
     scroll_detected = True
 
 # Запускаем слушатель мыши
