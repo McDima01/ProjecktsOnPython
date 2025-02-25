@@ -1,0 +1,26 @@
+{
+    "5038901733": {
+        "user_name": "@Salamchick",
+        "channel_id": -1002190006070,
+        "playlist_url": "https://music.yandex.ru/users/iva.noya/playlists/1009",
+        "post_interval": 3600,
+        "random_order": true,
+        "last_posted": 0,
+        "prem": true,
+        "end_prem": true,
+        "admin": true,
+        "setting_step": "ended"
+    },
+    "6476664007": {
+        "user_name": "@CTPECC_TECT",
+        "channel_id": null,
+        "playlist_url": "https://music.yandex.ru/users/dimas.rav/playlists/1007",
+        "post_interval": 3600,
+        "random_order": false,
+        "last_posted": 0,
+        "prem": false,
+        "end_prem": true,
+        "admin": false,
+        "setting_step": null
+    }
+}

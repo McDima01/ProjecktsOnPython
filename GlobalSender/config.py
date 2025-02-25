@@ -1,0 +1,2 @@
+BOT_TOKEN = "7795896923:AAGErIrtWoXUpXMbyf63seUIwlDFGGYBR3E"
+DATA_FILE = "user_data.json"
