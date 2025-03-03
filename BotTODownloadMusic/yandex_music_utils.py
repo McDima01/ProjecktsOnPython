@@ -79,6 +79,61 @@ def get_playlist_tracks(url):
         return []
 
 
+def download_track(track_url):
+    try:
+        # 1. Извлекаем ID альбома и трека из ссылки
+        match = re.search(r"album/(\d+)/track/(\d+)", track_url)
+        if not match:
+            return "Не удалось извлечь ID трека из ссылки."
+
+        album_id, track_id = match.groups()
+
+        # 2. Получаем объект трека
+        track = client.tracks(track_id)[0]
+
+        # 3. Формируем пути сохранения
+        track_name = f"{track.artists[0].name} - {track.title}.mp3"
+        track_path = os.path.join(DOWNLOAD_DIR, track_name)
+
+        cover_name = f"{track.artists[0].name} - {track.title}.jpg"
+        cover_path = os.path.join(DOWNLOAD_DIR, cover_name)
+
+        # 4. Скачиваем трек
+        track.download(track_path)
+
+        # 5. Скачиваем обложку (если есть)
+        if track.cover_uri:
+            cover_url = "https://" + track.cover_uri.replace("%%", "1000x1000")
+            response = requests.get(cover_url)
+            with open(cover_path, 'wb') as f:
+                f.write(response.content)
+
+            # 6. Добавляем обложку и метаданные в MP3
+            audio = MP3(track_path, ID3=ID3)
+            try:
+                audio.add_tags()
+            except Exception:
+                pass
+
+            audio.tags.add(
+                APIC(
+                    encoding=3,
+                    mime="image/jpeg",
+                    type=3,
+                    desc="Cover",
+                    data=open(cover_path, 'rb').read(),
+                )
+            )
+            audio.tags.add(TIT2(encoding=3, text=track.title))
+            audio.tags.add(TPE1(encoding=3, text=track.artists[0].name))
+            audio.save()
+
+        return track_path, cover_path
+
+    except Exception as e:
+        return f"Ошибка при скачивании трека: {e}"
+
+
 
 """import requests
 import os

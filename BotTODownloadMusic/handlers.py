@@ -1,7 +1,7 @@
 from telebot import TeleBot
 import yandex_music
 from utils import load_data, save_data
-from yandex_music_utils import get_playlist_tracks, get_track
+from yandex_music_utils import get_playlist_tracks, get_track, download_track
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from config import YANDEX_TOKEN
@@ -88,9 +88,11 @@ def register_handlers(bot: TeleBot):
 
 
             bot.send_message(message.from_user.id,
-                             f'Здравствуйте, {message.from_user.first_name}! \nЭтот бот может загрузить музыку в ваш канал. \nЧтобы настроить бота напишите /settings ')
+                             f'Здравствуйте, {message.from_user.first_name}! \nЭтот бот может загрузить музыку в ваш канал. \nЧтобы настроить бота напишите /settings. '
+                             f'\nЧтобы скачать любой трек напишите /download <ссылка на трек>.')
         else:
-            bot.send_message(message.from_user.id, f"Здравствуйте, {message.from_user.first_name}! \nЧто вы хотите сделать? \nВы можете запостить музыку командой /post")
+            bot.send_message(message.from_user.id, f"Здравствуйте, {message.from_user.first_name}! \nЧто вы хотите сделать? \nВы можете запостить музыку командой: \n/post. "
+                                                   f"\nИли вы можете скачать трек командой: \n/download <ссылка на трек>.")
 
     # region Настройка
     # Обработка команды /settings
@@ -305,6 +307,25 @@ def register_handlers(bot: TeleBot):
         save_data(data)
         settings_save(call)
     # endregion
+
+    #Обработка команды /download
+    @bot.message_handler(commands=["download"])
+    def download_track_on_url(message):
+        user_id = message.from_user.id
+        try:
+            user_url = message.text.split(" ")
+            track_path, cover_path = download_track(user_url[1])
+
+            # Отправляем аудиофайл пользователю
+            with open(track_path, 'rb') as audio, open(cover_path, 'rb') as cover:
+                bot.send_audio(user_id, audio, thumb=cover)
+
+            os.remove(track_path)
+            os.remove(cover_path)
+        except IndexError:
+            bot.send_message(user_id, "Чтобы скачать трек напишите /download <ссылка>")
+
+        welcome_skript(message, user_id)
 
     # Обработка команды /post
     @bot.message_handler(commands=["post"])

@@ -28,10 +28,14 @@ def go_to_mine():
     pyautogui.keyUp("w")
     pyautogui.keyUp("d")
     pydirectinput.moveRel(0, 5000)
+
     sleep(1)
+
     pyautogui.mouseDown(button="left")
     pyautogui.keyDown("s")
+
     sleep(0.5)
+
     pyautogui.mouseUp(button="left")
     pyautogui.keyUp("s")
 

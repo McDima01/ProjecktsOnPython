@@ -22,5 +22,17 @@
         "end_prem": true,
         "admin": false,
         "setting_step": null
+    },
+    "1050660654": {
+        "user_name": "@sane_artist",
+        "channel_id": null,
+        "playlist_url": "https://music.yandex.ru/users/dimas.rav/playlists/1007",
+        "post_interval": 3600,
+        "random_order": false,
+        "last_posted": 0,
+        "prem": false,
+        "end_prem": true,
+        "admin": false,
+        "setting_step": "get_channel_id"
     }
 }

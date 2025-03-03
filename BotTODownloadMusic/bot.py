@@ -14,7 +14,8 @@ commands = [
     {"command": "settings", "description": "настройка бота"},
     {"command": "post", "description": "Принудительно запостить музыку"},
     {"command": "start_auto", "description": "Начать \"автопост\" музыки "},
-    {"command": "stop_auto", "description": "Прекратить \"автопост\" музыки"}
+    {"command": "stop_auto", "description": "Прекратить \"автопост\" музыки"},
+    {"command": "download", "description": "Скачать трек по ссылке"}
 ]
 
 response = requests.post(url, json={"commands": commands})
