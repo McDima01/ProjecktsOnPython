@@ -23,5 +23,6 @@ print(response.json())
 
 if __name__ == "__main__":
     print("Бот запущен")
-    bot.infinity_polling(none_stop=True, skip_pending=True)
+    bot.infinity_polling(timeout=10, long_polling_timeout=5, restart_on_failure=True)
+
 
