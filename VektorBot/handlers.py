@@ -1,5 +1,3 @@
-from urllib.parse import uses_query
-
 from telebot import TeleBot, types
 from config import *
 from telebot.types import InputMediaPhoto, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
@@ -12,7 +10,6 @@ import re
         if check_user_subscription(bot, user_id):
         else:
             send_subscription_request(bot, user_id)
-
 """
 
 def escape_markdown_v2(text):
@@ -92,13 +89,9 @@ def register_handlers(bot: TeleBot):
         # endregion
         # region FeedBack
         elif call.data == "leaveFeedback":
-            sent = bot.send_message(
-                user_id,
-                r"""💬 Пожалуйста, напишите ваш отзыв о нашей продукции\. После проверки мы его выложим в [наш канал](t.me/vektor_feedback) с отзывами\.
+            sent = bot.send_message(user_id,r"""💬 Пожалуйста, напишите ваш отзыв о нашей продукции\. После проверки мы его выложим в [наш канал](t.me/vektor_feedback) с отзывами\.
 
-Пожалуйста, если вы хотите остаться анонимными, напишите об этом в начале отзыва\!""",
-                parse_mode="MarkdownV2"
-            )
+Пожалуйста, если вы хотите остаться анонимными, напишите об этом в начале отзыва\!""",parse_mode="MarkdownV2")
             bot.register_next_step_handler(sent, leave_feedback)  # <-- ждём текстовый ответ и передаём его в leave_feedback
         elif call.data == 'seeFeedback':
             markup = types.InlineKeyboardMarkup(row_width=2)
@@ -113,7 +106,37 @@ def register_handlers(bot: TeleBot):
             user_feedback = f"{first_namee}: \n\n {user_feedbackk}"
             bot.send_message(REVIEW_CHANNEL_ID, user_feedback)
             bot.send_message(user_id, "Отзыв успешно отправлен в канал!")
-        # endregion
+        elif call.data == 'changeReview':
+            sent = bot.send_message(user_id, f"Вот текст отзыва, нажмите чтобы скопировать: \n `{user_feedbackk}`",
+                                    parse_mode="MarkdownV2")
+            bot.register_next_step_handler(sent, change_review)
+        elif call.data == 'yesFeedback':
+            chat_id = call.message.chat.id
+            message_id = call.message.message_id
+            bot.send_message(REVIEW_CHANNEL_ID, admin_change_review)
+            bot.send_message(user_id, "Изменённый отзыв успешно отправлен в канал!")
+            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
+        elif call.data == 'noFeedback':
+            chat_id = call.message.chat.id
+            message_id = call.message.message_id
+            bot.send_message(user_id, "Хорошо, вы можете ещё раз изменить отзыв пользователя!")
+            sent = bot.send_message(user_id, f"Вот текст отзыва, нажмите чтобы скопировать: \n `{user_feedbackk}`",
+                                    parse_mode="MarkdownV2")
+            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
+            bot.register_next_step_handler(sent, change_review)
+            # endregion
+
+    def change_review(message):
+        user_id = message.from_user.id
+        global admin_change_review
+        admin_change_review = message.text
+
+        markup = types.InlineKeyboardMarkup(row_width=2)
+        button1 = types.InlineKeyboardButton("ДА", callback_data="yesFeedback")
+        button2 = types.InlineKeyboardButton("НЕТ", callback_data="noFeedback")
+        markup.add(button1, button2)
+
+        bot.send_message(user_id, "Вы уверены что хотите отправить этот отзыв?", reply_markup=markup)
 
     def leave_feedback(message):
         global user_feedbackk, usernamee, first_namee
