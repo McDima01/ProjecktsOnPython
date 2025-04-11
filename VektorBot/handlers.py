@@ -74,6 +74,7 @@ def register_handlers(bot: TeleBot):
         else:
             send_subscription_request(bot, user_id)
 
+    # All Inline Keyboard handler
     @bot.callback_query_handler(func=lambda call: True)
     def handle_callback(call):
         user_id = call.from_user.id
@@ -89,15 +90,16 @@ def register_handlers(bot: TeleBot):
         elif call.data == "relateWithUs":
             bot.send_message(user_id, "Hi")
         # endregion
-
         # region FeedBack
         elif call.data == "leaveFeedback":
             sent = bot.send_message(
                 user_id,
-                r"💬 Пожалуйста, напишите ваш отзыв о нашей продукции\. После проверки мы его выложим в [наш канал](t.me/vektor_feedback) с отзывами\.", parse_mode="MarkdownV2"
+                r"""💬 Пожалуйста, напишите ваш отзыв о нашей продукции\. После проверки мы его выложим в [наш канал](t.me/vektor_feedback) с отзывами\.
+
+Пожалуйста, если вы хотите остаться анонимными, напишите об этом в начале отзыва\!""",
+                parse_mode="MarkdownV2"
             )
-            bot.register_next_step_handler(sent,
-                                           leave_feedback)  # <-- ждём текстовый ответ и передаём его в leave_feedback
+            bot.register_next_step_handler(sent, leave_feedback)  # <-- ждём текстовый ответ и передаём его в leave_feedback
         elif call.data == 'seeFeedback':
             markup = types.InlineKeyboardMarkup(row_width=2)
             button1 = types.InlineKeyboardButton("✅ Отправить отзыв в канал", callback_data="sendReview")
@@ -106,15 +108,19 @@ def register_handlers(bot: TeleBot):
             markup.add(button1, button2)
             markup.add(button3)
             bot.send_message(user_id, f"Вот отзыв который отправил \"{first_namee}\" (@{usernamee}):")
-            bot.send_message(user_id, user_feedback, reply_markup=markup)
+            bot.send_message(user_id, user_feedbackk, reply_markup=markup)
+        elif call.data == 'sendReview':
+            user_feedback = f"{first_namee}: \n\n {user_feedbackk}"
+            bot.send_message(REVIEW_CHANNEL_ID, user_feedback)
+            bot.send_message(user_id, "Отзыв успешно отправлен в канал!")
         # endregion
 
     def leave_feedback(message):
-        global user_feedback, usernamee, first_namee
+        global user_feedbackk, usernamee, first_namee
         user_id = message.from_user.id
         first_namee = message.from_user.first_name
         usernamee = message.from_user.username
-        user_feedback = message.text
+        user_feedbackk = message.text
 
         markup = types.InlineKeyboardMarkup(row_width=2)
         button1 = types.InlineKeyboardButton("Посмотреть отзыв", callback_data="seeFeedback")
@@ -123,7 +129,7 @@ def register_handlers(bot: TeleBot):
         for admin in ADMINS:
             bot.send_message(admin, "У вас новый человек, который оставил отзыв, проверьте его и он опубликуется в канал!", reply_markup=markup)
         bot.send_message(user_id,
-                         "С радостью сообщаем вам, что ваш отзыв отправлен на проверку нашему менеджеру и в скоре он возможно появится в [нашем канале с отзывами](t.me/vektor_feedback)\.",
+                         r"С радостью сообщаем вам, что ваш отзыв отправлен на проверку нашему менеджеру и в скоре он возможно появится в [нашем канале с отзывами](t.me/vektor_feedback)\!",
                          parse_mode="MarkdownV2")
 
 
