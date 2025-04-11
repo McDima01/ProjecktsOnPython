@@ -103,13 +103,24 @@ def register_handlers(bot: TeleBot):
             bot.send_message(user_id, f"Вот отзыв который отправил \"{first_namee}\" (@{usernamee}):")
             bot.send_message(user_id, user_feedbackk, reply_markup=markup)
         elif call.data == 'sendReview':
+            chat_id = call.message.chat.id
+            message_id = call.message.message_id
             user_feedback = f"{first_namee}: \n\n {user_feedbackk}"
             bot.send_message(REVIEW_CHANNEL_ID, user_feedback)
             bot.send_message(user_id, "Отзыв успешно отправлен в канал!")
+            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
         elif call.data == 'changeReview':
+            chat_id = call.message.chat.id
+            message_id = call.message.message_id
             sent = bot.send_message(user_id, f"Вот текст отзыва, нажмите чтобы скопировать: \n `{user_feedbackk}`",
                                     parse_mode="MarkdownV2")
             bot.register_next_step_handler(sent, change_review)
+            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
+        elif call.data == "NotPostAReview":
+            chat_id = call.message.chat.id
+            message_id = call.message.message_id
+            bot.send_message(user_id, "Хорошо, отзыв не будет опубликован в канал!")
+            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
         elif call.data == 'yesFeedback':
             chat_id = call.message.chat.id
             message_id = call.message.message_id
@@ -124,7 +135,7 @@ def register_handlers(bot: TeleBot):
                                     parse_mode="MarkdownV2")
             bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
             bot.register_next_step_handler(sent, change_review)
-            # endregion
+        # endregion
 
     def change_review(message):
         user_id = message.from_user.id
