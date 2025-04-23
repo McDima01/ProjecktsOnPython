@@ -11,9 +11,9 @@ url = f"https://api.telegram.org/bot{BOT_TOKEN}/setMyCommands"
 
 commands = [
     {"command": "start", "description": "Перезапустить бота"},
-    {"command": "help", "description": "Помощь"},
-    {"command": "info", "description": "Информация о подъемниках"},
     {"command": "menu", "description": "Главное меню"},
+    {"command": "aboutus", "description": "О нас"},
+    {"command": "info", "description": "Информация о подъемниках"},
     {"command": "contact", "description": "Связаться с нами"},
     {"command": "rent", "description": "Аренда оборудования"},
     {"command": "feedback", "description": "Посмотреть отзывы"},
