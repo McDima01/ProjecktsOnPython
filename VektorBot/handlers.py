@@ -10,6 +10,7 @@ import re
     def example(message):
         user_id = message.from_user.id
         if check_user_subscription(bot, user_id):
+            # код странички 
         else:
             send_subscription_request(bot, user_id)
 """
@@ -24,7 +25,7 @@ def check_user_subscription(bot, user_id):
 
 def send_subscription_request(bot, user_id):
     markup = types.InlineKeyboardMarkup()
-    btn_subscribe = types.InlineKeyboardButton("\ud83d\udcE2 Подписаться", url=f"https://t.me/skndaas")
+    btn_subscribe = types.InlineKeyboardButton("\ud83d\udcE2 Подписаться", url=f"https://t.me/vectorbuilding    ")
     btn_check = types.InlineKeyboardButton("\ud83d\udd04 Проверить подписку", callback_data="check_sub")
     markup.add(btn_subscribe)
     markup.add(btn_check)
@@ -140,6 +141,13 @@ def register_handlers(bot: TeleBot):
             bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
             bot.register_next_step_handler(sent, change_review)
         # endregion
+        if call.data == "check_sub":
+            if check_user_subscription(bot, user_id):
+                bot.edit_message_text("✅ Вы подписаны на канал! \nПожалуйста, ещё раз напишите /start",
+                                      call.message.chat.id, call.message.message_id)
+            else:
+                bot.answer_callback_query(call.id, "❌ Вы ещё не подписаны!")
+            return  # не даём идти дальше по остальным условиям
 
     def change_review(message):
         user_id = message.from_user.id
@@ -169,15 +177,6 @@ def register_handlers(bot: TeleBot):
         bot.send_message(user_id,
                          r"С радостью сообщаем вам, что ваш отзыв отправлен на проверку нашему менеджеру и в скоре он возможно появится в [нашем канале с отзывами](t.me/vektor_feedback)\!",
                          parse_mode="MarkdownV2")
-
-    @bot.callback_query_handler(func=lambda call: call.data == "check_sub")
-    def check_subscription_callback(call):
-        user_id = call.from_user.id
-        if check_user_subscription(bot, user_id):
-            bot.edit_message_text("✅ Вы подписаны на канал! \nПожалуйста, ещё раз напишите /start",
-                                  call.message.chat.id, call.message.message_id)
-        else:
-            bot.answer_callback_query(call.id, "❌ Вы ещё не подписаны!")
 
     @bot.message_handler(commands=['aboutus'])
     def help_menu(message):
@@ -414,8 +413,3 @@ def register_handlers(bot: TeleBot):
         bot.send_message(user_id,
                          "С радостью сообщаем вам, что ваши контактные данные были отправлены нашему менеджеру. В ближайшее время он свяжется с вами.")
 
-
-
-
-# tttt
-#alkjdfagk
