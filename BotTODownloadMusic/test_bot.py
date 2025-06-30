@@ -1,6 +1,6 @@
 import telebot
 
-bot = telebot.TeleBot("7903459505:AAHgn0EqSDM0MGEg83_Q3md64JL5KbGHjTE")
+bot = telebot.TeleBot("none")
 
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply
 
@@ -90,7 +90,7 @@ if __name__ == "__main__":
 """import telebot
 from telebot import types
 
-bot = telebot.TeleBot("7903459505:AAHgn0EqSDM0MGEg83_Q3md64JL5KbGHjTE")
+bot = telebot.TeleBot("none")
 
 # Храним данные о пользователях
 user_data = {}
