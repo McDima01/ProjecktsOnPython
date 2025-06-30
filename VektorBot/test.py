@@ -2,7 +2,7 @@ import telebot
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 # Токен вашего бота
-bot = telebot.TeleBot("7621631887:AAFlbBrryFxp0u3e3gO9d19VSguMfuQVcP0")
+bot = telebot.TeleBot("none")
 
 
 bot.send_message(-1001622022510, "Ты ЛОХ!")
